@@ -1,0 +1,16 @@
+{
+  "node": {
+    "400af1c4f56dccc433ca992a8a235f7ce477aea65f": {
+      "workers": {
+        "app/reader/[bookId]/page": {
+          "moduleId": "[project]/.next-internal/server/app/reader/[bookId]/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/ai/flows/explain-difficult-page.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/reader/[bookId]/page": "action-browser"
+      }
+    }
+  },
+  "edge": {}
+}
