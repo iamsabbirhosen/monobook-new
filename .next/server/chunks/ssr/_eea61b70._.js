@@ -15,7 +15,7 @@ const books = [
         author: 'মোঃ সাব্বির হোসেন',
         price: 25.99,
         coverImageId: 'computer-programming-cover',
-        pdfUrl: 'src/booksPDF/biology.pdf'
+        pdfUrl: 'https://drive.google.com/uc?export=download&id=1BkVRWLTbknw1S9AKk9crJJ0eiHvSlIdf'
     },
     {
         id: '2',

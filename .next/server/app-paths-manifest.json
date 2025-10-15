@@ -1,3 +1,8 @@
 {
-  "/page": "app/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/explain/route": "app/api/explain/route.js",
+  "/api/ocr/route": "app/api/ocr/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js",
+  "/reader/[bookId]/page": "app/reader/[bookId]/page.js"
 }

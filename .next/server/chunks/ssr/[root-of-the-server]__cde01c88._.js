@@ -304,13 +304,17 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
  */ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/ai/genkit.ts [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$module__evaluation$3e$__ = __turbopack_context__.i("[project]/node_modules/genkit/lib/index.mjs [app-rsc] (ecmascript) <module evaluation>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/genkit/lib/common.js [app-rsc] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$google$2f$generative$2d$ai$2f$dist$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@google/generative-ai/dist/index.mjs [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$action$2d$validate$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/build/webpack/loaders/next-flight-loader/action-validate.js [app-rsc] (ecmascript)");
 ;
 ;
 ;
 ;
+;
 const ExplainDifficultPageInputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
-    pageContent: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The content of the current page that needs explanation.')
+    imageUrl: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The URL of the page image to analyze'),
+    prompt: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The prompt to send to Gemini'),
+    apiKey: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The Gemini API key')
 });
 const ExplainDifficultPageOutputSchema = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].object({
     explanation: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$genkit$2f$lib$2f$common$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["z"].string().describe('The explanation of the page content in an easy-to-understand way.')
@@ -318,25 +322,77 @@ const ExplainDifficultPageOutputSchema = __TURBOPACK__imported__module__$5b$proj
 async function explainDifficultPage(input) {
     return explainDifficultPageFlow(input);
 }
-const prompt = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ai"].definePrompt({
-    name: 'explainDifficultPagePrompt',
-    input: {
-        schema: ExplainDifficultPageInputSchema
-    },
-    output: {
-        schema: ExplainDifficultPageOutputSchema
-    },
-    prompt: `Teach the following content in the same language as the book in the easiest way possible:
-
-Content: {{{pageContent}}}`
-});
+const analyzeImage = async (imageUrl, prompt, apiKey)=>{
+    if (!apiKey || apiKey.trim() === '') {
+        throw new Error('Invalid API key: API key is required');
+    }
+    try {
+        // Extract bookId and page number from the URL
+        const urlParts = imageUrl.split('/');
+        const bookId = urlParts[urlParts.length - 2];
+        const fileName = urlParts[urlParts.length - 1];
+        // Construct the file path relative to public directory
+        const fs = __turbopack_context__.r("[externals]/fs [external] (fs, cjs)");
+        const path = __turbopack_context__.r("[externals]/path [external] (path, cjs)");
+        const imagePath = path.join(process.cwd(), 'public', 'pdfbooks', bookId, fileName);
+        console.log('Reading image from:', imagePath);
+        // Read the image file directly
+        const imageBuffer = fs.readFileSync(imagePath);
+        const base64Image = imageBuffer.toString('base64');
+        console.log('Image loaded and converted to base64');
+        const genAI = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$google$2f$generative$2d$ai$2f$dist$2f$index$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["GoogleGenerativeAI"](apiKey);
+        const model = genAI.getGenerativeModel({
+            model: "gemini-pro-vision"
+        });
+        console.log('Image size:', imageBuffer.length, 'bytes');
+        const imagePart = {
+            inlineData: {
+                data: base64Image,
+                mimeType: "image/jpeg"
+            }
+        };
+        console.log('Sending request to Gemini with prompt:', prompt);
+        const result = await model.generateContent([
+            prompt,
+            imagePart
+        ]);
+        const response = await result.response;
+        const text = response.text();
+        console.log('Received response from Gemini:', text.substring(0, 100) + '...'); // Show first 100 chars
+        return text;
+    } catch (error) {
+        console.error('Error in analyzeImage:', error);
+        if (error instanceof Error) {
+            throw new Error(`Image analysis failed: ${error.message}`);
+        } else {
+            throw new Error('Image analysis failed: Unknown error');
+        }
+    }
+};
+const blobToBase64 = (blob)=>{
+    return new Promise((resolve, reject)=>{
+        const reader = new FileReader();
+        reader.onloadend = ()=>{
+            if (typeof reader.result === 'string') {
+                resolve(reader.result.split(',')[1]);
+            } else {
+                reject(new Error('Failed to convert blob to base64'));
+            }
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+};
 const explainDifficultPageFlow = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$ai$2f$genkit$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ai"].defineFlow({
     name: 'explainDifficultPageFlow',
     inputSchema: ExplainDifficultPageInputSchema,
     outputSchema: ExplainDifficultPageOutputSchema
 }, async (input)=>{
-    const { output } = await prompt(input);
-    return output;
+    const explanation = await analyzeImage(input.imageUrl, input.prompt, input.apiKey);
+    return {
+        explanation
+    };
+    "TURBOPACK unreachable";
 });
 ;
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$action$2d$validate$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ensureServerEntryExports"])([

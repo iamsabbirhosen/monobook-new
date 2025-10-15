@@ -2,9 +2,8 @@
   "[project]/src/app/reader/[bookId]/ReaderClient.tsx [app-client] (ecmascript, next/dynamic entry)": {
     "id": "[project]/src/app/reader/[bookId]/ReaderClient.tsx [app-client] (ecmascript, next/dynamic entry)",
     "files": [
-      "static/chunks/node_modules_react-pdf_dist_esm_Page_cf9568f1._.css",
-      "static/chunks/node_modules_6fa9aa5e._.js",
-      "static/chunks/src_b6d16717._.js",
+      "static/chunks/node_modules_e7aa3b2f._.js",
+      "static/chunks/src_9ec0b0d2._.js",
       "static/chunks/src_app_reader_[bookId]_ReaderClient_tsx_51c31547._.js"
     ]
   }

@@ -559,6 +559,10 @@ body {
   margin-bottom: 2rem;
 }
 
+.ml-2 {
+  margin-left: .5rem;
+}
+
 .ml-auto {
   margin-left: auto;
 }
@@ -688,6 +692,10 @@ body {
   height: 1px;
 }
 
+.h-\[calc\(100vh-12rem\)\] {
+  height: calc(100vh - 12rem);
+}
+
 .h-\[calc\(100vh-3\.5rem\)\] {
   height: calc(100vh - 3.5rem);
 }
@@ -718,10 +726,6 @@ body {
 
 .max-h-\[80\%\] {
   max-height: 80%;
-}
-
-.max-h-full {
-  max-height: 100%;
 }
 
 .max-h-screen {
@@ -834,10 +838,6 @@ body {
 
 .w-\[80\%\] {
   width: 80%;
-}
-
-.w-\[80vw\] {
-  width: 80vw;
 }
 
 .w-\[90\%\] {
@@ -2645,10 +2645,6 @@ body {
 
   .md\:hidden {
     display: none;
-  }
-
-  .md\:w-full {
-    width: 100%;
   }
 
   .md\:max-w-\[420px\] {
