@@ -183,25 +183,55 @@ export default function ReaderClient({ book }: { book: Book }) {
 
       {/* AI Helper Dialog */}
       <Dialog open={isAiHelperOpen} onOpenChange={setIsAiHelperOpen}>
-        <DialogContent className="sm:max-w-[625px]">
+        <DialogContent className="sm:max-w-[800px]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 font-headline text-2xl">
-              <Sparkles className="text-primary" /> AI Study Helper
+              <Sparkles className="text-primary" /> AI Study Assistant
             </DialogTitle>
             <DialogDescription>
-              Here's a simplified explanation of the content on page {pageNumber}.
+              Expert explanation of page {pageNumber} content, designed to help you understand better.
             </DialogDescription>
           </DialogHeader>
-          <ScrollArea className="max-h-[60vh] pr-6">
+          <ScrollArea className="max-h-[70vh] pr-6">
             {isAiLoading ? (
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-[80%]" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-[90%]" />
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Skeleton className="h-6 w-[40%]" />
+                  <Skeleton className="h-4 w-[80%]" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-[90%]" />
+                </div>
+                <div className="space-y-2">
+                  <Skeleton className="h-6 w-[35%]" />
+                  <Skeleton className="h-4 w-[85%]" />
+                  <Skeleton className="h-4 w-[75%]" />
+                </div>
+                <div className="space-y-2">
+                  <Skeleton className="h-6 w-[45%]" />
+                  <Skeleton className="h-4 w-[70%]" />
+                  <Skeleton className="h-4 w-[95%]" />
+                </div>
+              </div>
               </div>
             ) : (
-              <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap font-body text-base">
-                {aiExplanation}
+              <div className="prose prose-slate dark:prose-invert max-w-none">
+                <div className="space-y-6">
+                  {aiExplanation.split('\n\n').map((section, index) => {
+                    if (section.startsWith('#') || /^\d+\./.test(section)) {
+                      return (
+                        <div key={index} className="space-y-2">
+                          <h3 className="text-lg font-semibold text-primary">{section.split('\n')[0]}</h3>
+                          <div className="pl-4">
+                            {section.split('\n').slice(1).map((line, i) => (
+                              <p key={i} className="my-1">{line}</p>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    }
+                    return <p key={index} className="my-2">{section}</p>;
+                  })}
+                </div>
               </div>
             )}
           </ScrollArea>

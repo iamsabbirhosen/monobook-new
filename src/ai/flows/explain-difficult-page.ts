@@ -112,22 +112,57 @@ const analyzeImage = async (imageUrl: string, prompt: string, apiKey: string): P
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" }); // Using vision model
 
-    const promptText = `This is a page from a Bengali (Bangla) textbook. Please analyze this image and:
+    const promptText = `You are analyzing a page from a Bengali Biology textbook (বায়োলজি ১ম পত্র). As an expert teacher, please provide a comprehensive educational explanation of this page.
 
-1. First, carefully read and understand the Bengali text shown in the image
-2. Provide an accurate English translation of the Bengali text
-3. Explain the main concepts and ideas presented in the text
-4. Give practical examples to help understand the concepts
-5. List the key points to remember
+Please analyze and explain following this structure:
 
-Important: Please focus on accurate translation and clear explanation of the Bengali text.
+1. Content Overview:
+   - Identify the main biological topic or concept
+   - Note any diagrams, illustrations, or visual elements
+   - Provide context within the broader subject
 
-Please format your response as:
-1. English Translation
-2. Main Concepts Explanation
-3. Real-world Examples
-4. Key Points to Remember
-5. Practice Questions (if relevant)`;
+2. Detailed Translation & Terminology:
+   - Provide an accurate Bengali to English translation
+   - Maintain scientific terminology accuracy
+   - Define any technical terms or new vocabulary
+   - Keep important Bengali scientific terms alongside English translations
+
+3. Concept Explanation:
+   - Break down complex biological concepts into simple terms
+   - Explain processes step by step
+   - Connect to fundamental biological principles
+   - Use analogies when helpful
+
+4. Visual Analysis (if diagrams present):
+   - Explain diagrams or illustrations in detail
+   - Translate and explain all labels
+   - Connect visuals to the main text
+   - Highlight important features
+
+5. Real-World Applications:
+   - Provide examples from everyday life
+   - Connect to observable biological phenomena
+   - Explain practical significance
+   - Share relevant real-world scenarios
+
+6. Key Learning Points:
+   - List 3-5 essential takeaways
+   - Highlight crucial terminology
+   - Note important relationships or processes
+   - Emphasize exam-relevant points
+
+7. Study Tips:
+   - Share effective memorization techniques
+   - Suggest practical study methods
+   - Provide exam-focused tips
+   - Recommend related topics to explore
+
+8. Check Understanding:
+   - Include 2-3 practice questions
+   - Provide thought-provoking discussion points
+   - Add self-assessment prompts
+
+Please use a friendly, encouraging teaching tone throughout your explanation. Break down complex concepts into digestible parts, assuming the reader is a high school student learning Biology. Format your response with clear headings and bullet points for easy reading.`;
 
     console.log('Sending request to Gemini...');
     const result = await model.generateContent([
