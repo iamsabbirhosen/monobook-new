@@ -62,7 +62,7 @@ const getImageBuffer = async (imageUrl: string): Promise<Buffer> => {
   }
 };
 
-const analyzeImage = async (imageUrl: string, prompt: string, apiKey: string) => {
+const analyzeImage = async (imageUrl: string, prompt: string, apiKey: string): Promise<string> => {
   if (!apiKey || apiKey.trim() === '') {
     throw new Error('Invalid API key: API key is required');
   }
@@ -70,32 +70,42 @@ const analyzeImage = async (imageUrl: string, prompt: string, apiKey: string) =>
   try {
     console.log('Processing image:', imageUrl);
 
-    // Handle the path
-    let fullPath: string;
+    let imageBuffer: Buffer;
     
-    // If it's already an absolute path, use it directly
-    if (path.isAbsolute(imageUrl)) {
-      fullPath = imageUrl;
+    // If it's a complete URL (from Vercel deployment)
+    if (imageUrl.startsWith('http')) {
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image: ${response.statusText}`);
+      }
+      const arrayBuffer = await response.arrayBuffer();
+      imageBuffer = Buffer.from(arrayBuffer);
+      console.log('Successfully fetched image from URL');
     } else {
-      // Remove leading slash if present
+      // For local development, read from filesystem
       const relativePath = imageUrl.startsWith('/') ? imageUrl.slice(1) : imageUrl;
-      fullPath = path.join(process.cwd(), 'public', relativePath);
+      const fullPath = path.join(process.cwd(), 'public', relativePath);
+      
+      try {
+        await fs.promises.access(fullPath, fs.constants.R_OK);
+        imageBuffer = await fs.promises.readFile(fullPath);
+        console.log('Successfully read image from local filesystem');
+      } catch (error) {
+        console.error('File access error:', error);
+        // Try fetching from Vercel URL as fallback
+        const vercelUrl = `https://monobook-new.vercel.app${imageUrl}`;
+        console.log('Attempting to fetch from Vercel:', vercelUrl);
+        const response = await fetch(vercelUrl);
+        if (!response.ok) {
+          throw new Error(`Image not found locally or on Vercel: ${imageUrl}`);
+        }
+        const arrayBuffer = await response.arrayBuffer();
+        imageBuffer = Buffer.from(arrayBuffer);
+        console.log('Successfully fetched image from Vercel');
+      }
     }
-
-    console.log('Reading image from:', fullPath);
-
-    // Verify file exists
-    try {
-      await fs.promises.access(fullPath, fs.constants.R_OK);
-    } catch (error) {
-      console.error('File access error:', error);
-      throw new Error(`Image file not found at: ${fullPath}`);
-    }
-
-    // Read the image file
-    const imageBuffer = await fs.promises.readFile(fullPath);
+    
     const base64Data = imageBuffer.toString('base64');
-
     console.log('Image loaded successfully');
 
     // Initialize Gemini
