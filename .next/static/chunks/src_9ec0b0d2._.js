@@ -450,7 +450,6 @@ var { g: global, __dirname, k: __turbopack_refresh__, m: module } = __turbopack_
 __turbopack_context__.s({
     "default": (()=>ReaderClient)
 });
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$sparkles$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Sparkles$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/sparkles.js [app-client] (ecmascript) <export default as Sparkles>");
@@ -536,12 +535,11 @@ function ReaderClient({ book }) {
         setIsAiLoading(true);
         setAiExplanation('');
         try {
-            // Get the full URL including the hostname
-            const baseUrl = window.location.origin;
-            // In development, use relative path; in production, use full URL
-            const imageUrl = ("TURBOPACK compile-time falsy", 0) ? ("TURBOPACK unreachable", undefined) : `/pdfbooks/${book.id}/${pageNumber}.jpg`;
-            console.log('Attempting to analyze image:', imageUrl); // Debug log
-            const prompt = "Attached image is from my textbooks page, teach me this page like an ideal teacher with example";
+            // Always use relative path for API
+            const imageUrl = `/pdfbooks/${book.id}/${pageNumber}.jpg`;
+            console.log('Processing image:', imageUrl);
+            const prompt = "Please analyze and explain this Bengali textbook page with translation and examples";
+            console.log('Sending request to analyze image:', imageUrl);
             const response = await fetch('/api/explain', {
                 method: 'POST',
                 headers: {
@@ -550,14 +548,17 @@ function ReaderClient({ book }) {
                 body: JSON.stringify({
                     imageUrl,
                     prompt,
-                    apiKey: 'AIzaSyC7TooMO4Hdn7szn_5m9UmCNFckyYPqYQ'
+                    apiKey: 'AIzaSyC7TooMO4Hdn7szn_5m9UmCNFcfkyYPqYQ'
                 })
             });
+            const contentType = response.headers.get('content-type');
             if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || 'Failed to get explanation');
+                const errorText = contentType?.includes('application/json') ? (await response.json()).error : await response.text();
+                console.error('API Error Response:', errorText);
+                throw new Error(errorText || 'Failed to get explanation');
             }
             const result = await response.json();
+            console.log('API Response:', result);
             if (!result?.explanation) {
                 throw new Error('No explanation received from AI');
             }
@@ -586,7 +587,7 @@ function ReaderClient({ book }) {
                     children: "Access Denied"
                 }, void 0, false, {
                     fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                    lineNumber: 139,
+                    lineNumber: 142,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -594,13 +595,13 @@ function ReaderClient({ book }) {
                     children: "You do not own this book. Please purchase it to read."
                 }, void 0, false, {
                     fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                    lineNumber: 140,
+                    lineNumber: 143,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-            lineNumber: 138,
+            lineNumber: 141,
             columnNumber: 7
         }, this);
     }
@@ -618,7 +619,7 @@ function ReaderClient({ book }) {
                 }
             }, void 0, false, {
                 fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                lineNumber: 148,
+                lineNumber: 151,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -632,7 +633,7 @@ function ReaderClient({ book }) {
                                 children: "My Notes"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                                lineNumber: 162,
+                                lineNumber: 165,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$textarea$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Textarea"], {
@@ -642,13 +643,13 @@ function ReaderClient({ book }) {
                                 className: "flex-grow resize-none text-base"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                                lineNumber: 163,
+                                lineNumber: 166,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                        lineNumber: 161,
+                        lineNumber: 164,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -659,7 +660,7 @@ function ReaderClient({ book }) {
                                 children: "Study Tools"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                                lineNumber: 171,
+                                lineNumber: 174,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -670,14 +671,14 @@ function ReaderClient({ book }) {
                                         className: "mr-2 h-4 w-4"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                                        lineNumber: 173,
+                                        lineNumber: 176,
                                         columnNumber: 13
                                     }, this),
                                     " Need help with this page?"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                                lineNumber: 172,
+                                lineNumber: 175,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -689,26 +690,26 @@ function ReaderClient({ book }) {
                                         className: "mr-2 h-4 w-4"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                                        lineNumber: 176,
+                                        lineNumber: 179,
                                         columnNumber: 13
                                     }, this),
                                     " Highlight (UI Only)"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                                lineNumber: 175,
+                                lineNumber: 178,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                        lineNumber: 170,
+                        lineNumber: 173,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                lineNumber: 160,
+                lineNumber: 163,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Dialog"], {
@@ -726,14 +727,14 @@ function ReaderClient({ book }) {
                                             className: "text-primary"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                                            lineNumber: 186,
+                                            lineNumber: 189,
                                             columnNumber: 15
                                         }, this),
                                         " AI Study Helper"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                                    lineNumber: 185,
+                                    lineNumber: 188,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogDescription"], {
@@ -744,13 +745,13 @@ function ReaderClient({ book }) {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                                    lineNumber: 188,
+                                    lineNumber: 191,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                            lineNumber: 184,
+                            lineNumber: 187,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$scroll$2d$area$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ScrollArea"], {
@@ -762,56 +763,56 @@ function ReaderClient({ book }) {
                                         className: "h-4 w-[80%]"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                                        lineNumber: 195,
+                                        lineNumber: 198,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$skeleton$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Skeleton"], {
                                         className: "h-4 w-full"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                                        lineNumber: 196,
+                                        lineNumber: 199,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$skeleton$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Skeleton"], {
                                         className: "h-4 w-[90%]"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                                        lineNumber: 197,
+                                        lineNumber: 200,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                                lineNumber: 194,
+                                lineNumber: 197,
                                 columnNumber: 15
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap font-body text-base",
                                 children: aiExplanation
                             }, void 0, false, {
                                 fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                                lineNumber: 200,
+                                lineNumber: 203,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                            lineNumber: 192,
+                            lineNumber: 195,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                    lineNumber: 183,
+                    lineNumber: 186,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-                lineNumber: 182,
+                lineNumber: 185,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/reader/[bookId]/ReaderClient.tsx",
-        lineNumber: 146,
+        lineNumber: 149,
         columnNumber: 5
     }, this);
 }

@@ -1,6 +1,6 @@
 const CHUNK_PUBLIC_PATH = "server/app/api/explain/route.js";
 const runtime = require("../../../chunks/[turbopack]_runtime.js");
-runtime.loadChunk("server/chunks/node_modules_node-fetch_src_index_9f4b21d2.js");
+runtime.loadChunk("server/chunks/node_modules_node-fetch_src_index_47946e7a.js");
 runtime.loadChunk("server/chunks/node_modules_next_08c29e47._.js");
 runtime.loadChunk("server/chunks/node_modules_zod_lib_ec01c515._.js");
 runtime.loadChunk("server/chunks/node_modules_ajv_dist_4699a16a._.js");
@@ -23,8 +23,8 @@ runtime.loadChunk("server/chunks/node_modules_tr46_816df9d9._.js");
 runtime.loadChunk("server/chunks/node_modules_google-auth-library_78e0d5a0._.js");
 runtime.loadChunk("server/chunks/node_modules_gaxios_b4fdf6a9._.js");
 runtime.loadChunk("server/chunks/node_modules_@opentelemetry_ff514040._.js");
-runtime.loadChunk("server/chunks/node_modules_a1bbfeb2._.js");
-runtime.loadChunk("server/chunks/[root-of-the-server]__494d87be._.js");
+runtime.loadChunk("server/chunks/node_modules_c6a95190._.js");
+runtime.loadChunk("server/chunks/[root-of-the-server]__cf5cc760._.js");
 runtime.getOrInstantiateRuntimeModule("[project]/.next-internal/server/app/api/explain/route/actions.js [app-rsc] (server actions loader, ecmascript)", CHUNK_PUBLIC_PATH);
 runtime.getOrInstantiateRuntimeModule("[project]/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/src/app/api/explain/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)", CHUNK_PUBLIC_PATH);
 module.exports = runtime.getOrInstantiateRuntimeModule("[project]/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/src/app/api/explain/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)", CHUNK_PUBLIC_PATH).exports;

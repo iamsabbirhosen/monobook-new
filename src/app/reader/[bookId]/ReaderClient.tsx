@@ -84,15 +84,12 @@ export default function ReaderClient({ book }: { book: Book }) {
     setIsAiLoading(true);
     setAiExplanation('');
     try {
-      // Get the full URL including the hostname
-      const baseUrl = window.location.origin;
-      // In development, use relative path; in production, use full URL
-      const imageUrl = process.env.NODE_ENV === 'production'
-        ? `${baseUrl}/pdfbooks/${book.id}/${pageNumber}.jpg`
-        : `/pdfbooks/${book.id}/${pageNumber}.jpg`;
-      console.log('Attempting to analyze image:', imageUrl); // Debug log
+      // Always use relative path for API
+      const imageUrl = `/pdfbooks/${book.id}/${pageNumber}.jpg`;
+      console.log('Processing image:', imageUrl);
+      const prompt = "Please analyze and explain this Bengali textbook page with translation and examples";
       
-      const prompt = "Attached image is from my textbooks page, teach me this page like an ideal teacher with example";
+      console.log('Sending request to analyze image:', imageUrl);
       const response = await fetch('/api/explain', {
         method: 'POST',
         headers: {
@@ -101,16 +98,22 @@ export default function ReaderClient({ book }: { book: Book }) {
         body: JSON.stringify({
           imageUrl,
           prompt,
-          apiKey: 'AIzaSyC7TooMO4Hdn7szn_5m9UmCNFckyYPqYQ'
+          apiKey: 'AIzaSyC7TooMO4Hdn7szn_5m9UmCNFcfkyYPqYQ'
         }),
       });
 
+      const contentType = response.headers.get('content-type');
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to get explanation');
+        const errorText = contentType?.includes('application/json') 
+          ? (await response.json()).error 
+          : await response.text();
+        console.error('API Error Response:', errorText);
+        throw new Error(errorText || 'Failed to get explanation');
       }
 
       const result = await response.json();
+      console.log('API Response:', result);
+
       if (!result?.explanation) {
         throw new Error('No explanation received from AI');
       }

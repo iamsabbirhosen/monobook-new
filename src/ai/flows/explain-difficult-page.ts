@@ -34,7 +34,7 @@ export async function explainDifficultPage(
   return explainDifficultPageFlow(input);
 }
 
-const getImageBase64 = async (imageUrl: string): Promise<string> => {
+const getImageBuffer = async (imageUrl: string): Promise<Buffer> => {
   try {
     let imagePath: string;
     let imageBuffer: Buffer;
@@ -53,7 +53,7 @@ const getImageBase64 = async (imageUrl: string): Promise<string> => {
       imageBuffer = await fs.promises.readFile(imagePath);
     }
 
-    return imageBuffer.toString('base64');
+    return imageBuffer;
   } catch (error) {
     console.error('Error getting image data:', error);
     throw error instanceof Error 
@@ -68,19 +68,49 @@ const analyzeImage = async (imageUrl: string, prompt: string, apiKey: string) =>
   }
 
   try {
-    // Get image data
-    console.log('Processing image...');
-    const base64Image = await getImageBase64(imageUrl);
+    console.log('Processing image:', imageUrl);
+
+    // Handle the path
+    let fullPath: string;
     
+    // If it's already an absolute path, use it directly
+    if (path.isAbsolute(imageUrl)) {
+      fullPath = imageUrl;
+    } else {
+      // Remove leading slash if present
+      const relativePath = imageUrl.startsWith('/') ? imageUrl.slice(1) : imageUrl;
+      fullPath = path.join(process.cwd(), 'public', relativePath);
+    }
+
+    console.log('Reading image from:', fullPath);
+
+    // Verify file exists
+    try {
+      await fs.promises.access(fullPath, fs.constants.R_OK);
+    } catch (error) {
+      console.error('File access error:', error);
+      throw new Error(`Image file not found at: ${fullPath}`);
+    }
+
+    // Read the image file
+    const imageBuffer = await fs.promises.readFile(fullPath);
+    const base64Data = imageBuffer.toString('base64');
+
+    console.log('Image loaded successfully');
+
     // Initialize Gemini
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" }); // Using vision model
 
-    const promptText = `This is a page from a Bengali (Bangla) textbook. Please:
-1. Read and understand the Bengali text in the image
-2. Translate it to English
-3. Explain the content like an ideal teacher with examples
-4. Provide key points and practice questions if applicable
+    const promptText = `This is a page from a Bengali (Bangla) textbook. Please analyze this image and:
+
+1. First, carefully read and understand the Bengali text shown in the image
+2. Provide an accurate English translation of the Bengali text
+3. Explain the main concepts and ideas presented in the text
+4. Give practical examples to help understand the concepts
+5. List the key points to remember
+
+Important: Please focus on accurate translation and clear explanation of the Bengali text.
 
 Please format your response as:
 1. English Translation
@@ -97,7 +127,7 @@ Please format your response as:
       {
         inlineData: {
           mimeType: 'image/jpeg',
-          data: base64Image
+          data: base64Data
         }
       }
     ]);    const response = await result.response;
